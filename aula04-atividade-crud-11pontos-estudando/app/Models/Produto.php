@@ -4,30 +4,25 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Produto extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'nome',
-        'preco',
-        'quantidade',
-        'distribuidora_id',
-        'categoria_id',
-        'created_by',
-    ];
+    protected $fillable = ['nome', 'preco', 'quantidade', 'distribuidora_id', 'categoria_id', 'created_by'];
 
-    public function distribuidora(): BelongsTo {
+    // Relacionamento distribuidora
+    public function distribuidora() {
         return $this->belongsTo(Distribuidora::class);
     }
 
-    public function categoria(): BelongsTo {
+    // Relacionamento categoria
+    public function categoria() {
         return $this->belongsTo(Categoria::class);
     }
-    
-    public function createdBy(): BelongsTo {
+
+    // Relacionamento user
+    public function createdBy() {
         return $this->belongsTo(User::class, 'created_by');
     }
 }

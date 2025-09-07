@@ -16,9 +16,11 @@ return new class extends Migration
             $table->string('nome');
             $table->decimal('preco', 8, 2);
             $table->integer('quantidade');
-            $table->foreignId('distribuidora_id')->constrained('distribuidoras');
-            $table->foreignId('categoria_id')->constrained('categorias');
-            $table->foreignId('created_by')->constrained('users');
+            
+            $table->foreignId('distribuidora_id')->constrained('distribuidoras', 'id')->onDelete('cascade');
+            $table->foreignId('categoria_id')->constrained('categorias', 'id')->onDelete('cascade');
+            $table->foreignId('created_by')->constrained('users', 'id')->onDelete('cascade');
+
             $table->timestamps();
         });
     }
