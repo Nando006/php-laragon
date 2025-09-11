@@ -12,13 +12,7 @@ class MatriculaController extends Controller
      */
     public function index()
     {
-        $data = Matricula::with(['aluno','curso'])->get();
-
-        return [
-            'status' => 200,
-            'message' => 'Todas as matrículas listadas',
-            'data' => $data
-        ];
+        //
     }
 
     /**
@@ -26,28 +20,7 @@ class MatriculaController extends Controller
      */
     public function store(Request $request)
     {
-        $validando = $request->validate([
-            'curso_id' => 'required|exists:cursos,id',
-            'aluno_id' => 'required|exists:alunos,id',
-        ]);
-
-        // Verifica se já existe matrícula para este aluno neste curso
-        $matriculaExistente = Matricula::where('curso_id', $validando['curso_id'])->where('aluno_id', $validando['aluno_id'])->first();
-
-        if($matriculaExistente) {
-            return [
-                'status' => 422,
-                'message' => 'Este aluno já está matriculado'
-            ];
-        }
-
-        $data = Matricula::create($validando);
-
-        return [
-            'status' => 200,
-            'message' => 'Matrícula criada com sucesso',
-            'data' => $data
-        ];
+        //
     }
 
     /**
@@ -55,11 +28,7 @@ class MatriculaController extends Controller
      */
     public function show(Matricula $matricula)
     {
-        return [
-            'status' => 200,
-            'message' => 'Matricula encontrada!',
-            'data' => $matricula->load(['aluno', 'curso']),
-        ];
+        //
     }
 
     /**
@@ -67,30 +36,7 @@ class MatriculaController extends Controller
      */
     public function update(Request $request, Matricula $matricula)
     {
-        $validando = $request->validate([
-            'curso_id' => 'required|exists:cursos,id',
-            'aluno_id' => 'required|exists:alunos,id'
-        ]);
-
-        // Verifica se a atualização já existe
-        if(isset($validando['curso_id']) && isset($validando['aluno_id'])) {
-            $matriculaExistente = Matricula::where('curso_id', $validando['curso_id'])->where('aluno_id', $validando['aluno_id'])->where('id', '!=', $matricula->id)->firts();
-
-            if($matriculaExistente) {
-                return [
-                    'status' => 422,
-                    'message' => 'Matricula já existe',
-                ];
-            }
-
-            $matricula->update($validando);
-
-            return [
-                'status' => 200,
-                'message' => 'Matrícula atualizada',
-                'data' => $matricula->load(['aluno', 'curso']),
-            ];
-        }
+        //
     }
 
     /**
@@ -98,10 +44,6 @@ class MatriculaController extends Controller
      */
     public function destroy(Matricula $matricula)
     {
-        return [
-            'status' => 200,
-            'message' => 'Matrícula deletada com sucesso',
-            'data' => $matricula->delete()
-        ];
+        //
     }
 }

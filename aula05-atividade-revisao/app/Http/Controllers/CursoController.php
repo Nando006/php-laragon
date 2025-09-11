@@ -7,16 +7,20 @@ use Illuminate\Http\Request;
 
 class CursoController extends Controller
 {
+    private function respostaPadrao($message = 'Resposta obitida com sucesso', $data = null) {
+        return [
+            'status' => 200,
+            'message' => $message,
+            'data' => $data
+        ];
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return [
-            'status' => 200,
-            'message' => 'Todos os cursos listados com sucesso',
-            'data' => Curso::with('alunos')->get()
-        ];
+        return $this->respostaPadrao(data: Curso::with('matriculas.aluno')->get());
     }
 
     /**
@@ -24,16 +28,15 @@ class CursoController extends Controller
      */
     public function store(Request $request)
     {
-        $validando = $request->validate([
-            'titulo' => 'required|string',
-            'descricao' => 'nullable|string'
-        ]);
+        if(!$request->has('titulo')) {
+            return [
+                'status' => 400,
+                'message' => 'Campos obrigatórios não informados',
+                'data' => null
+            ];
+        }
 
-        return [
-            'status' => 200,
-            'message' => 'Curso criado com sucesso',
-            'data' => Curso::create($validando),
-        ];
+        return $this->respostaPadrao(message: 'Curso criado com sucesso!' ,data: Curso::create($request->all()));
     }
 
     /**
@@ -41,11 +44,7 @@ class CursoController extends Controller
      */
     public function show(Curso $curso)
     {
-        return [
-            'status' => 200,
-            'message' => 'Curso encontrado!',
-            'data' => $curso->load('alunos'),
-        ];
+        return $this->respostaPadrao(message: 'Curso encontrado com sucesso!' ,data: $curso->load('matriculas.aluno'));
     }
 
     /**
@@ -53,16 +52,15 @@ class CursoController extends Controller
      */
     public function update(Request $request, Curso $curso)
     {
-        $validando = $request->validate([
-            'titulo' => 'required|string',
-            'descricao' => 'nullable|string'
-        ]);
+        if(!$request->has('titulo')) {
+            return [
+                'status' => 400,
+                'message' => 'Campos obrigatórios não informados',
+                'data' => null
+            ];
+        }
 
-        return [
-            'status' => 200,
-            'message' => 'Curso atualizado com sucesso!',
-            'data' => $curso->update($validando)
-        ];
+        return $this->respostaPadrao(message: 'Curso atualizado com sucesso!' ,data: $curso->update($request->all()));
     }
 
     /**
@@ -70,10 +68,8 @@ class CursoController extends Controller
      */
     public function destroy(Curso $curso)
     {
-        return [
-            'status' => 200,
-            'message' => 'Curso deletado com sucesso',
-            'data' => $curso->delete(),
-        ];
+        $curso->delete();
+
+        return $this->respostaPadrao(message: 'Curso deletado com sucesso!');
     }
 }

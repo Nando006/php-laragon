@@ -2,25 +2,21 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Matricula extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
-        'curso_id',
-        'aluno_id'
+        'aluno_id',
+        'curso_id'
     ];
 
-    // Relacionamento: Uma matricula pertence a um curso
-    public function curso(): BelongsTo {
-        return $this->belongsTo(Curso::class);
+    public function cursos(): BelongsToMany {
+        return $this->belongsToMany(Curso::class);
     }
 
-    // Relacionamento: Uma matricula pertence a um aluno
     public function aluno(): BelongsTo {
         return $this->belongsTo(Aluno::class);
     }

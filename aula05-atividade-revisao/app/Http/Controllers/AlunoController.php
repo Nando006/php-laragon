@@ -7,28 +7,23 @@ use Illuminate\Http\Request;
 
 class AlunoController extends Controller
 {
+    private function respostaPadrao($message = 'Resposta obitida com sucesso', $data = null) {
+        return [
+            'status' => 200,
+            'message' => $message,
+            'data' => $data
+        ];
+    }
+
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index()
     {
-        $consultando = Aluno::query();
-
-        if($request->has('nome')) {
-            $consultando->porNome($request->nome);
-        }
-
-        if($request->has('email')) {
-            $consultando->porEmail($request->email);
-        }
-
-        $data = $consultando->with('cursos')->get();
-
-        return [
-            'status' => 200,
-            'message' => 'Lista de alunos',
-            'data' => $data
-        ];
+        return $this->respostaPadrao(
+            message: 'Alunos listado com sucesso',
+            data: Aluno::with('matriculas.aluno')->get()
+        );
     }
 
     /**
@@ -36,19 +31,17 @@ class AlunoController extends Controller
      */
     public function store(Request $request)
     {
-        $validando = $request->validate([
-            'nome' => 'required|string',
-            'email' => 'required|string|unique:alunos,email',
-            'dataNascimento' => 'nullable|string',
-        ]);
+        if(!$request->has('nome') || !$request->has('email')) {
+            return [
+                'status' => 400,
+                'message' => 'Nome e e-mail são obrigatórios',
+                'data' => null
+            ];
+        }
 
-        $data = Aluno::create($validando);
+        $data = Aluno::create($request->all());
 
-        return [
-            'status' => 200,
-            'message' => 'Aluno criado com sucesso',
-            'data' => $data
-        ];
+        return $this->respostaPadrao(message: 'Aluno criado com sucesso', data: $data);
     }
 
     /**
@@ -56,11 +49,7 @@ class AlunoController extends Controller
      */
     public function show(Aluno $aluno)
     {
-        return [
-            'status' => 200,
-            'message' => 'Aluno encontrado',
-            'data' => $aluno->load('cursos')
-        ];
+        return $this->respostaPadrao(message: 'Aluno encontrado!', data: $aluno->load('matriculas.aluno'));
     }
 
     /**
@@ -68,17 +57,17 @@ class AlunoController extends Controller
      */
     public function update(Request $request, Aluno $aluno)
     {
-        $validando = $request->validate([
-            'nome' => 'required|string',
-            'email' => 'required|string',
-            'dataNascimento' => 'nullable|string'
-        ]);
+        if(!$request->has('nome') || !$request->has('email')) {
+            return [
+                'status' => 400,
+                'message' => 'Nome e e-mail são obrigatórios',
+                'data' => null
+            ];
+        }
 
-        return [
-            'status' => 200,
-            'message' => 'Aluno atualizado com sucesso',
-            'data' => $aluno->update($validando)
-        ];
+        $data = $aluno->update($request->all());
+
+        return $this->respostaPadrao(message: 'Aluno criado com sucesso', data: $data);
     }
 
     /**
@@ -86,38 +75,8 @@ class AlunoController extends Controller
      */
     public function destroy(Aluno $aluno)
     {
-        return [
-            'status' => 200,
-            'message' => 'Aluno deletado com sucesso',
-            'data' => $aluno->delete()
-        ];
-    }
+        $aluno->delete();
 
-    public function buscarPorNome(Request $request) {
-        $request->validate([
-            'nome' => 'requred|string'
-        ]);
-
-        $data = Aluno::porNome($request->nome)->with('cursos')->get();
-
-        return [
-            'status' => 200,
-            'message' => 'Alunos encontrados por nome',
-            'data' => $data
-        ];
-    }
-
-    public function buscarPorEmail(Request $request) {
-        $request->validate([
-            'email' => 'required|email'
-        ]);
-
-        $data = Aluno::porEmail($request->email)->with('cursos')->get();
-
-        return [
-            'status' => 200,
-            'message' => 'Alunos encontrados por e-mail',
-            'data' => $data
-        ];
+        return $this->respostaPadrao(message: 'Aluno deletado com sucesso');
     }
 }
