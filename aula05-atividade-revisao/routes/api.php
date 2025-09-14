@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AlunoController;
 use App\Http\Controllers\CursoController;
+use App\Http\Controllers\MatriculaController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -20,3 +21,9 @@ Route::post('/aluno', [AlunoController::class, 'store']);
 Route::get('/aluno/{aluno}', [AlunoController::class, 'show']);
 Route::put('/aluno/{aluno}', [AlunoController::class, 'update']);
 Route::delete('/aluno/{aluno}', [AlunoController::class, 'destroy']);
+
+Route::get('/matriculas', [MatriculaController::class, 'index']);
+Route::post('/matricula', [MatriculaController::class, 'store']);
+Route::get('/matricula/{matricula}', [MatriculaController::class, 'show']);
+Route::put('/matricula/{matricula}', [MatriculaController::class, 'update']);
+Route::delete('/matricula/{matricula}', [MatriculaController::class, 'destroy']);

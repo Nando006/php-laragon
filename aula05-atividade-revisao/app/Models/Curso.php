@@ -13,6 +13,6 @@ class Curso extends Model
     ];
 
     public function matriculas(): HasMany {
-        return $this->hasMany(matricula::class);
+        return $this->hasMany(Matricula::class);
     }
 }
